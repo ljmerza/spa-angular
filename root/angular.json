@@ -1,0 +1,96 @@
+{
+  "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
+  "version": 1,
+  "newProjectRoot": "projects",
+  "projects": {
+    "root-app": {
+      "projectType": "application",
+      "schematics": {
+        "@schematics/angular:component": {
+          "style": "scss"
+        }
+      },
+      "root": "",
+      "sourceRoot": "src",
+      "prefix": "root",
+      "architect": {
+        "build": {
+          "builder": "@angular-builders/custom-webpack:browser",
+          "options": {
+            "outputPath": "dist/root-app",
+            "index": "src/index.html",
+            "polyfills": [
+              "zone.js"
+            ],
+            "tsConfig": "tsconfig.app.json",
+            "inlineStyleLanguage": "scss",
+            "assets": [
+              {
+                "glob": "**/*",
+                "input": "public"
+              }
+            ],
+            "styles": [
+              "src/styles.scss"
+            ],
+            "scripts": [],
+            "main": "src/main.single-spa.ts",
+            "customWebpackConfig": {
+              "path": "extra-webpack.config.js",
+              "libraryName": "root-app",
+              "libraryTarget": "umd"
+            },
+            "deployUrl": "http://localhost:4200/"
+          },
+          "configurations": {
+            "production": {
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "500kB",
+                  "maximumError": "1MB"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "2kB",
+                  "maximumError": "4kB"
+                }
+              ],
+              "outputHashing": "none"
+            },
+            "development": {
+              "optimization": false,
+              "extractLicenses": false,
+              "sourceMap": true,
+              "outputHashing": "none"
+            },
+            "single-spa": {
+              "outputPath": "dist/root-app",
+              "index": "src/index.html",
+              "main": "src/main.single-spa.ts",
+              "polyfills": "src/polyfills.ts",
+              "tsConfig": "tsconfig.app.json",
+              "optimization": false
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "serve": {
+          "builder": "@angular-builders/custom-webpack:dev-server",
+          "configurations": {
+            "production": {
+              "buildTarget": "root-app:build:production"
+            },
+            "development": {
+              "buildTarget": "root-app:build:development"
+            },
+            "single-spa": {
+              "buildTarget": "root-app:build:single-spa"
+            }
+          },
+          "defaultConfiguration": "development"
+        }
+      }
+    }
+  }
+}
